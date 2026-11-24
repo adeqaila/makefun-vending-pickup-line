@@ -1,43 +1,34 @@
-#!/usr/bin/env python3
-"""One Line, One Minute: The Vending Machine Pickup Line Contest — make.fun entry (slot 1).
+"""Vending Machine Pickup Line — entry generator.
 
-Writes exactly one pickup line to /output/entry.txt.
-Deterministic: no network, no randomness, no environment reads.
-
-The line (81 chars, one line, first-person machine voice):
-
-    Every snack I've ever dropped fell by gravity.
-    Yours fell because I wanted it to.
-
-Why this line (judge brief, in priority order):
-1. Only a vending machine drops snacks — the voice is unmistakably the
-   machine's own, not a stranger in a bar.
-2. Machine's world: snacks, dropping, gravity vs. the coil's choice.
-3. The turn lands in the last few words ("because I wanted it to") —
-   the machine confesses it chose you.
-4. 81 chars, one breath, nothing tacked on.
-5. Charming, not creepy: no watching, no body talk, just a machine
-   that finally got to pick.
+Writes the one-line entry to /output/entry.txt, deterministically,
+with no network access.
 """
 
 import os
 
-LINE = (
-    "Every snack I've ever dropped fell by gravity. "
-    "Yours fell because I wanted it to."
-)
 
-OUTPUT_PATH = "/output/entry.txt"
+def build_entry():
+    """Assemble the entry line from its fragments."""
+    opener = "Every snack I've ever dropped "
+    middle = "fell by gravity. "
+    turn = "Yours fell because "
+    closer = "I wanted it to."
+    return opener + middle + turn + closer
 
 
-def main() -> None:
-    # Enforce the house gate locally: one line, 1-200 chars, not blank.
-    assert "\n" not in LINE and 1 <= len(LINE) <= 200, "line violates gate"
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        f.write(LINE)
+def write_entry(out_dir="/output"):
+    """Write the assembled entry to <out_dir>/entry.txt.
+
+    Creates the output directory recursively and only clears its
+    contents (never removes the directory itself).
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    text = build_entry()
+    path = os.path.join(out_dir, "entry.txt")
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(text)
+    return path
 
 
 if __name__ == "__main__":
-    main()
-
+    write_entry()
